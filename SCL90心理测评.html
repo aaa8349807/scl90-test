@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SCL-90 症状自评量表 - 专业心理健康测评</title>
+<style>
+  :root{
+    --primary:#2563eb;
+    --primary-dark:#1d4ed8;
+    --primary-light:#e8f0fe;
+    --bg:#f2f6fc;
+    --card:#ffffff;
+    --text:#1f2937;
+    --text-sub:#64748b;
+    --border:#e2e8f0;
+    --green:#16a34a;
+    --yellow:#ca8a04;
+    --orange:#ea580c;
+    --red:#dc2626;
+    --radius:14px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    font-family:"Microsoft YaHei","PingFang SC","Segoe UI",Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.65;
+  }
+  .container{max-width:960px;margin:0 auto;padding:0 16px 40px;}
+
+  /* ===== 顶部栏 ===== */
+  .topbar{
+    background:linear-gradient(135deg,#1d4ed8,#2563eb 60%,#3b82f6);
+    color:#fff;
+    padding:14px 0;
+    box-shadow:0 2px 10px rgba(37,99,235,.25);
+    position:sticky;top:0;z-index:100;
+  }
+  .topbar .inner{max-width:960px;margin:0 auto;padding:0 16px;display:flex;align-items:center;gap:12px;}
+  .logo-badge{
+    width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,.2);
+    display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;flex:none;
+  }
+  .topbar h1{font-size:18px;font-weight:700;letter-spacing:.5px;}
+  .topbar .sub{font-size:12px;opacity:.85;}
+
+  /* ===== 卡片 ===== */
+  .card{
+    background:var(--card);
+    border-radius:var(--radius);
+    box-shadow:0 1px 4px rgba(15,23,42,.06);
+    padding:24px;
+    margin-top:20px;
+    border:1px solid var(--border);
+  }
+  .card-title{
+    font-size:17px;font-weight:700;color:var(--primary-dark);
+    display:flex;align-items:center;gap:8px;margin-bottom:14px;
+  }
+  .card-title::before{content:"";width:4px;height:18px;background:var(--primary);border-radius:2px;}
+
+  /* ===== 介绍页 ===== */
+  .hero{
+    text-align:center;padding:36px 24px 28px;
+    background:linear-gradient(160deg,#ffffff,#eef4ff);
+  }
+  .hero .scale-name{font-size:28px;font-weight:800;color:var(--primary-dark);}
+  .hero .scale-en{font-size:13px;color:var(--text-sub);margin-top:6px;letter-spacing:1px;}
+  .hero .scale-tag{
+    display:inline-block;margin-top:14px;padding:5px 16px;border-radius:20px;
+    background:var(--primary-light);color:var(--primary-dark);font-size:13px;font-weight:600;
+  }
+  .intro-text{font-size:15px;color:var(--text);background:#f8fafc;border-left:4px solid var(--primary);padding:12px 16px;border-radius:0 8px 8px 0;margin-top:18px;}
+  .guide-list{margin-top:16px;display:flex;flex-direction:column;gap:10px;}
+  .guide-item{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:#334155;}
+  .guide-item .idx{
+    flex:none;width:22px;height:22px;border-radius:50%;background:var(--primary-light);
+    color:var(--primary-dark);font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;margin-top:2px;
+  }
+  .btn-start{
+    display:block;width:100%;margin-top:26px;padding:14px;border:none;border-radius:12px;
+    background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;font-size:17px;font-weight:700;cursor:pointer;
+    box-shadow:0 6px 18px rgba(37,99,235,.35);transition:.2s;letter-spacing:2px;
+  }
+  .btn-start:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(37,99,235,.45);}
+
+  /* ===== 答题页 ===== */
+  .progress-wrap{display:flex;align-items:center;gap:14px;margin-bottom:6px;}
+  .progress-bar{flex:1;height:10px;background:#e2e8f0;border-radius:6px;overflow:hidden;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,#3b82f6,#2563eb);border-radius:6px;transition:width .3s;}
+  .progress-num{font-size:13px;color:var(--text-sub);white-space:nowrap;}
+  .test-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding:14px 18px;background:var(--primary-light);border-radius:10px;}
+  .test-head .pg{font-size:15px;font-weight:700;color:var(--primary-dark);}
+  .test-head .done{font-size:13px;color:var(--text-sub);}
+  .test-head .done b{color:var(--primary-dark);font-size:15px;}
+
+  .q-card{
+    background:#fff;border:1px solid var(--border);border-radius:14px;padding:28px 26px;margin-bottom:14px;
+    transition:border-color .2s, box-shadow .2s;
+  }
+  .q-card.answered{border-left:4px solid var(--primary);}
+  .q-text{font-size:17px;font-weight:600;color:#0f172a;margin-bottom:22px;text-align:center;line-height:1.7;}
+  .q-card.fade-in{animation:fadeIn .28s ease;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+  .q-no{color:var(--primary);font-weight:700;margin-right:4px;}
+  .question-stage{max-width:660px;margin:0 auto;}
+  .q-opts{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:6px;}
+  .opt{
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    padding:14px 16px;border:2px solid var(--border);border-radius:12px;cursor:pointer;
+    font-size:15px;color:#334155;background:#f8fafc;transition:all .15s;user-select:none;
+  }
+  .opt.opt-last{grid-column:1 / -1;justify-self:center;width:calc(50% - 6px);min-width:200px;}
+  .opt:hover{border-color:#93c5fd;background:#eff6ff;}
+  .opt input{position:absolute;opacity:0;pointer-events:none;}
+  .opt .dot{width:16px;height:16px;border:2px solid #cbd5e1;border-radius:50%;flex:none;transition:all .15s;background:#fff;}
+  .opt input:checked ~ .dot{border-color:var(--primary);background:var(--primary);box-shadow:inset 0 0 0 3px #fff;}
+  .opt input:checked ~ .opt-label{color:var(--primary-dark);font-weight:700;}
+  .opt:has(input:checked){border-color:var(--primary);background:var(--primary-light);}
+  .nav-btns{display:flex;justify-content:space-between;gap:14px;margin-top:20px;}
+  .nav-btns .btn{
+    padding:11px 26px;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;transition:.15s;border:none;
+  }
+  .btn-prev{background:#e2e8f0;color:#334155;}
+  .btn-prev:hover{background:#cbd5e1;}
+  .btn-next,.btn-submit{background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;}
+  .btn-next:hover,.btn-submit:hover{opacity:.9;}
+  .btn-submit{background:linear-gradient(135deg,#059669,#047857);}
+
+  /* ===== 报告页 ===== */
+  .risk-banner{
+    display:none;background:linear-gradient(135deg,#fee2e2,#fecaca);border:2px solid var(--red);
+    border-radius:12px;padding:18px 20px;margin-top:20px;color:#7f1d1d;
+  }
+  .risk-banner.show{display:block;}
+  .risk-banner .title{font-size:17px;font-weight:800;display:flex;align-items:center;gap:8px;}
+  .risk-banner .title::before{content:"⚠";font-size:20px;}
+  .risk-banner p{font-size:14px;margin-top:8px;}
+  .risk-banner .hotline{margin-top:10px;padding:10px 14px;background:#fff;border-radius:8px;border:1px solid #fca5a5;font-size:14px;font-weight:600;color:#991b1b;}
+
+  .summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+  .sum-item{background:#f8fafc;border:1px solid var(--border);border-radius:10px;padding:12px 14px;text-align:center;}
+  .sum-item .label{font-size:12px;color:var(--text-sub);}
+  .sum-item .value{font-size:24px;font-weight:800;color:var(--primary-dark);margin-top:4px;}
+  .sum-item .value.small{font-size:18px;}
+  .sum-item.wide{grid-column:span 3;}
+  .screen-conclusion{margin-top:14px;padding:13px 16px;border-radius:10px;font-size:15px;font-weight:700;text-align:center;}
+  .sc-pos{background:#fef2f2;color:#b91c1c;border:1px solid #fecaca;}
+  .sc-neg{background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;}
+
+  .report-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:20px;margin-top:20px;}
+  .radar-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;}
+  .radar-wrap canvas{width:100%;max-width:400px;height:auto;}
+  .radar-legend{font-size:12px;color:var(--text-sub);margin-top:8px;}
+
+  table.factor-table{width:100%;border-collapse:collapse;font-size:14px;}
+  table.factor-table th{background:var(--primary-light);color:var(--primary-dark);padding:10px 8px;text-align:center;font-weight:700;border-bottom:2px solid #bfdbfe;}
+  table.factor-table td{padding:9px 8px;text-align:center;border-bottom:1px solid var(--border);}
+  table.factor-table tr:hover td{background:#f8fafc;}
+  .fname{font-weight:700;color:#0f172a;}
+  .badge{display:inline-block;padding:2px 12px;border-radius:20px;font-size:12px;font-weight:700;}
+  .lv-normal{background:#dcfce7;color:#15803d;}
+  .lv-mild{background:#fef9c3;color:#a16207;}
+  .lv-moderate{background:#ffedd5;color:#c2410c;}
+  .lv-severe{background:#fee2e2;color:#b91c1c;}
+
+  .factor-detail{border:1px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:16px;background:#fff;}
+  .fd-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .fd-name{font-size:16px;font-weight:800;color:#0f172a;}
+  .fd-en{font-size:12px;color:var(--text-sub);}
+  .fd-score{font-size:16px;font-weight:800;color:var(--primary-dark);margin-left:auto;}
+  .fd-desc{font-size:13px;color:var(--text-sub);margin-top:8px;padding:10px 14px;background:#f8fafc;border-radius:8px;border-left:3px solid #93c5fd;}
+  .fd-report{margin-top:12px;font-size:14px;color:#334155;padding:12px 14px;border-radius:8px;}
+  .fd-report.lv-normal{background:#f0fdf4;border:1px solid #bbf7d0;color:#14532d;}
+  .fd-report.lv-mild{background:#fefce8;border:1px solid #fef08a;color:#713f12;}
+  .fd-report.lv-moderate{background:#fff7ed;border:1px solid #fed7aa;color:#7c2d12;}
+  .fd-report.lv-severe{background:#fef2f2;border:1px solid #fecaca;color:#7f1d1d;}
+
+  .advice-box{background:linear-gradient(160deg,#eff6ff,#ffffff);border:1px solid #bfdbfe;border-radius:12px;padding:18px 20px;}
+  .advice-box h3{font-size:15px;color:var(--primary-dark);margin-bottom:10px;}
+  .advice-box ul{margin-left:20px;display:flex;flex-direction:column;gap:8px;font-size:14px;color:#334155;}
+
+  .toolbar{display:flex;gap:12px;justify-content:center;margin-top:24px;}
+  .btn-print{padding:12px 30px;border:none;border-radius:10px;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;font-size:15px;font-weight:700;cursor:pointer;}
+  .btn-print:hover{opacity:.9;}
+  .btn-retry{padding:12px 30px;border:none;border-radius:10px;background:#e2e8f0;color:#334155;font-size:15px;font-weight:700;cursor:pointer;}
+  .btn-retry:hover{background:#cbd5e1;}
+
+  footer{max-width:960px;margin:30px auto 0;padding:18px 16px 30px;text-align:center;}
+  .disclaimer{
+    font-size:12px;color:#94a3b8;background:#fff;border:1px solid var(--border);
+    border-radius:10px;padding:12px 16px;margin-bottom:10px;
+  }
+  footer .copyright{font-size:12px;color:#94a3b8;}
+
+  /* ===== 打印 ===== */
+  @media print{
+    .no-print{display:none !important;}
+    body{background:#fff;}
+    .topbar{position:static;box-shadow:none;}
+    #intro-page,#test-page{display:none !important;}
+    #report-page{display:block !important;}
+    .card,.factor-detail{box-shadow:none;border:1px solid #d1d5db;break-inside:avoid;}
+    .advice-box{break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+
+<!-- 顶部 -->
+<div class="topbar">
+  <div class="inner">
+    <div class="logo-badge">心</div>
+    <div>
+      <h1>心理健康测评系统</h1>
+      <div class="sub">SCL-90 Symptom Checklist · 专业级症状自评工具</div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ============ 首屏：介绍与作答说明 ============ -->
+  <div id="intro-page">
+    <div class="card hero">
+      <div class="scale-name">SCL-90 症状自评量表</div>
+      <div class="scale-en">Symptom Checklist-90 (SCL-90) · 标准版</div>
+      <div class="scale-tag">90 题 · 10 维度 · 5 级计分</div>
+      <div class="intro-text">以下表格中列出了有些人可能会有的问题，请仔细阅读每一条，然后根据最近一星期以内下述情况影响您的实际感觉，从「没有 / 很轻 / 中等 / 偏重 / 严重」5 个选项中选出最符合您情况的一项。请凭第一感觉作答，不要反复斟酌。</div>
+
+      <div style="margin-top:22px;text-align:left;">
+        <div class="card-title">作答说明</div>
+        <div class="guide-list">
+          <div class="guide-item"><span class="idx">1</span><span><b>题量与时长：</b>共 90 题，分 9 页作答，每页 10 题，预计耗时约 15 分钟，请预留充足时间一次性完成。</span></div>
+          <div class="guide-item"><span class="idx">2</span><span><b>计分方式：</b>每题按「没有=1、很轻=2、中等=3、偏重=4、严重=5」五级计分，请根据最近一周的真实感受选择。</span></div>
+          <div class="guide-item"><span class="idx">3</span><span><b>作答原则：</b>凭第一感觉作答，不要反复斟酌；所有题目均为单选，未作答完当前页题目将无法进入下一页。</span></div>
+          <div class="guide-item"><span class="idx">4</span><span><b>报告内容：</b>提交后将自动生成总均分、总分、阳性项目等综合指标，以及 10 个维度的得分、程度评估与详细文字报告，并附可视化雷达图。</span></div>
+          <div class="guide-item"><span class="idx">5</span><span><b>隐私安全：</b>本测评完全在本地浏览器离线运行，作答数据不出本机，结果仅用于健康自评与参考，不构成医学诊断。</span></div>
+        </div>
+      </div>
+
+      <button class="btn-start" onclick="startTest()">开 始 测 评</button>
+    </div>
+  </div>
+
+  <!-- ============ 答题页（一题一页） ============ -->
+  <div id="test-page" style="display:none;">
+    <div class="card" style="margin-top:20px;padding:22px 20px 28px;">
+      <div class="progress-wrap">
+        <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+        <div class="progress-num" id="progressNum">第 1 / 90 题</div>
+      </div>
+      <div class="test-head">
+        <span class="pg" id="pageTitle">SCL-90 症状自评量表 · 作答中</span>
+        <span class="done">已完成 <b id="doneCount">0</b> / 90 题</span>
+      </div>
+      <div class="question-stage" id="questionStage"></div>
+      <div class="nav-btns" id="navBtns">
+        <button class="btn btn-prev" id="btnPrev" onclick="prevQuestion()" style="visibility:hidden;">上一题</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 报告页 ============ -->
+  <div id="report-page" style="display:none;">
+
+    <div class="risk-banner" id="riskBanner">
+      <div class="title">心理危机风险提示</div>
+      <p>您在「想结束自己的生命」或「想到死亡的事」相关条目上选择了较明显的程度，这是需要认真对待的信号。请务必重视并尽快寻求专业帮助，您不必独自承受。</p>
+      <div class="hotline">
+        <div style="font-size:16px;">全国心理援助热线：12356</div>
+        <div style="font-weight:400;margin-top:4px;">若您此刻有伤害自己的念头，请立即拨打全国心理援助热线 12356，或前往就近医院急诊寻求帮助。</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">综合得分报告</div>
+      <div class="summary-grid">
+        <div class="sum-item"><div class="label">总均分（总分 ÷ 90）</div><div class="value" id="rTotalMean">-</div></div>
+        <div class="sum-item"><div class="label">总分（90 题得分之和）</div><div class="value" id="rTotal">-</div></div>
+        <div class="sum-item"><div class="label">阳性项目数（得分 ≥ 2）</div><div class="value" id="rPosCnt">-</div></div>
+        <div class="sum-item"><div class="label">阴性项目数（得分 = 1）</div><div class="value" id="rNegCnt">-</div></div>
+        <div class="sum-item"><div class="label">阳性症状均分</div><div class="value small" id="rPosMean">-</div></div>
+        <div class="sum-item"><div class="label">筛查参考线（总分 ≥ 160 / 阳性 ≥ 43 / 因子 ≥ 2）</div><div class="value small" id="rScreenLine">-</div></div>
+      </div>
+      <div class="screen-conclusion" id="rConclusion"></div>
+    </div>
+
+    <div class="report-grid">
+      <div class="card radar-wrap">
+        <div class="card-title">九大因子雷达图</div>
+        <canvas id="radarCanvas" width="640" height="640"></canvas>
+        <div class="radar-legend">刻度 1-5：1 = 没有 &nbsp; 2 = 很轻 &nbsp; 3 = 中等 &nbsp; 4 = 偏重 &nbsp; 5 = 严重</div>
+      </div>
+      <div class="card">
+        <div class="card-title">因子得分明细表</div>
+        <table class="factor-table">
+          <thead><tr><th>因子</th><th>得分</th><th>程度</th></tr></thead>
+          <tbody id="factorTableBody"></tbody>
+        </table>
+        <div style="font-size:12px;color:var(--text-sub);margin-top:10px;">因子分 = 该因子各条目得分之和 ÷ 该因子条目数；程度区间：&lt;1.5 正常范围 / 1.5-2 轻度 / 2-2.5 中度 / ≥2.5 重度倾向。</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">各因子详细评估报告</div>
+      <div id="factorDetails"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">整体综合评估与个性化建议</div>
+      <div class="advice-box" id="adviceBox"></div>
+    </div>
+
+    <div class="toolbar no-print">
+      <button class="btn-print" onclick="window.print()">打印 / 导出报告</button>
+      <button class="btn-retry" onclick="restartTest()">重新测评</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- 页脚免责声明 -->
+<footer class="no-print">
+  <div class="disclaimer">本测评结果基于 SCL-90 症状自评量表标准计分规则生成，仅用于健康自评与参考，不构成医学诊断。如有疑虑，请前往正规医院精神科或心理科就诊咨询。</div>
+  <div class="copyright">SCL-90 症状自评量表 · 心理健康测评系统 · 数据仅在本机离线处理</div>
+</footer>
+
+<script>
+/* ============================================================
+   SCL-90 量表数据（题目、因子归属、报告文案均取自标准版原始数据）
+============================================================ */
+const SCL90_DATA = {
+  "scale": "SCL-90 症状自评量表",
+  "version": "标准版（90题，5级计分）",
+  "intro": "以下表格中列出了有些人可能会有的问题，请仔细阅读每一条，然后根据最近一星期以内下述情况影响您的实际感觉，从「没有 / 很轻 / 中等 / 偏重 / 严重」5 个选项中选出最符合您情况的一项。请凭第一感觉作答，不要反复斟酌。",
+  "options": [
+    {"value": 1, "label": "没有"},
+    {"value": 2, "label": "很轻"},
+    {"value": 3, "label": "中等"},
+    {"value": 4, "label": "偏重"},
+    {"value": 5, "label": "严重"}
+  ],
+  "factors": [
+    {
+      "id": "SOM",
+      "name": "躯体化",
+      "nameEn": "Somatization",
+      "items": [1, 4, 12, 27, 40, 42, 48, 49, 52, 53, 56, 58],
+      "desc": "躯体化因子主要反映主观的身体不适感，包括心血管、胃肠道、呼吸系统等各系统的主诉，以及头痛、背痛、肌肉酸痛等疼痛体验。该因子得分高低提示身心关系：情绪压力有时会通过身体症状表达出来。",
+      "levels": {
+        "normal": "您的躯体化因子得分处于正常范围，提示您近期没有明显的身体不适主诉，身心状态总体平稳，各系统功能感受良好。",
+        "mild": "您的躯体化因子得分呈轻度水平，提示您近期可能存在一些轻微的身体不适（如偶发头痛、疲劳感、肌肉紧张等），可能与压力、睡眠不足或情绪紧张有关。建议规律作息、适度运动、学会放松，并观察症状是否随情绪改善而缓解。",
+        "moderate": "您的躯体化因子得分呈中度水平，提示您近期体验到较明显的身心不适，身体症状可能已对日常生活和工作造成一定影响。建议先进行必要的医学检查以排除器质性疾病，同时重视情绪压力对身体的影响，必要时寻求心理专业评估与疏导。",
+        "severe": "您的躯体化因子得分较高，提示您近期存在突出的躯体不适主诉，身心交互影响明显，症状可能已显著干扰正常生活。强烈建议您前往医院相关科室进行系统的医学检查以排除器质性疾病，同时结合心理专科评估，制定综合干预方案。"
+      }
+    },
+    {
+      "id": "OC",
+      "name": "强迫症状",
+      "nameEn": "Obsessive-Compulsive",
+      "items": [3, 9, 10, 28, 38, 45, 46, 51, 55, 65],
+      "desc": "强迫症状因子反映强迫观念与强迫行为，如明知不必要却无法摆脱的想法、反复检查核对、做事必须按特定方式完成、难以做出决定、注意力难以集中等体验。",
+      "levels": {
+        "normal": "您的强迫症状因子得分处于正常范围，提示您思维和行为方式较为灵活，没有明显的强迫性困扰。",
+        "mild": "您的强迫症状因子得分呈轻度水平，提示您可能存在一些轻微的重复性想法或行为（如偶尔反复检查、犹豫不决），尚未对生活造成明显困扰。适度接纳这些体验，不必过度对抗，通常可以自行调节。",
+        "moderate": "您的强迫症状因子得分呈中度水平，提示您存在较明显的强迫观念或强迫行为，可能已耗费较多时间精力并带来内心冲突。建议学习接纳与转移注意力等应对方法，若困扰持续加重，可寻求专业心理咨询或认知行为治疗。",
+        "severe": "您的强迫症状因子得分较高，提示强迫性思维或行为已较为突出，可能明显消耗您的时间与精力，造成显著痛苦。强烈建议您尽快寻求心理专科评估，认知行为疗法（CBT）等专业干预对强迫症状有较好效果，请勿拖延。"
+      }
+    },
+    {
+      "id": "INT",
+      "name": "人际关系敏感",
+      "nameEn": "Interpersonal Sensitivity",
+      "items": [6, 21, 34, 36, 37, 41, 61, 69, 73],
+      "desc": "人际关系敏感因子反映人际交往中的不自在感与自卑感，尤其是与他人比较时更加突出，如害羞不自在、感到他人不友好、感情容易受伤、觉得自己不如他人等。",
+      "levels": {
+        "normal": "您的人际关系敏感因子得分处于正常范围，提示您在日常人际交往中较为自在，自我认同感总体稳定。",
+        "mild": "您的人际关系敏感因子得分呈轻度水平，提示您在部分社交场合可能感到紧张或不自在，对他人的评价较为在意。这是很多人都会有的体验，可通过逐步增加社交接触、练习自我接纳来改善。",
+        "moderate": "您的人际关系敏感因子得分呈中度水平，提示人际交往中的不自在感和自卑感已较明显，可能影响您的社交意愿与质量。建议梳理产生敏感的核心信念，尝试温和地扩大舒适区；若持续困扰，可考虑心理咨询。",
+        "severe": "您的人际关系敏感因子得分较高，提示您在人际互动中存在较强烈的紧张、回避或自我否定体验，社交功能可能明显受损。强烈建议寻求专业心理帮助，通过系统干预重建稳定的人际自我评价。"
+      }
+    },
+    {
+      "id": "DEP",
+      "name": "抑郁",
+      "nameEn": "Depression",
+      "items": [5, 14, 15, 20, 22, 26, 29, 30, 31, 32, 54, 71, 79],
+      "desc": "抑郁因子反映与临床抑郁症状群相联系的广泛体验，包括心境低落、兴趣减退、精力下降、无望感、自我责怪、孤独苦闷，乃至自杀观念等。",
+      "levels": {
+        "normal": "您的抑郁因子得分处于正常范围，提示您近期情绪状态总体平稳，兴趣与活力水平良好。",
+        "mild": "您的抑郁因子得分呈轻度水平，提示您近期可能体验到情绪偏低、动力不足或偶尔的苦闷孤独，通常与近期压力事件相关。建议保持规律作息与适度运动，多与亲友交流，多数情况下可以自行恢复。",
+        "moderate": "您的抑郁因子得分呈中度水平，提示您近期存在较明显的抑郁体验，如兴趣减退、精力下降、自我价值感降低等，可能已影响工作与生活。建议重视情绪信号，主动调整生活方式，并考虑寻求心理咨询或精神心理科评估。",
+        "severe": "您的抑郁因子得分较高，提示您近期抑郁体验较为突出，可能伴随明显的无望感、自我否定甚至消极念头。请务必重视：抑郁是一种可以治疗的疾病。强烈建议您尽快寻求精神心理专科帮助，并告知信任的家人朋友您的状态。若您此刻有伤害自己的念头，请立即拨打全国心理援助热线 12356，或前往就近医院急诊。"
+      }
+    },
+    {
+      "id": "ANX",
+      "name": "焦虑",
+      "nameEn": "Anxiety",
+      "items": [2, 17, 23, 33, 39, 57, 72, 78, 80, 86],
+      "desc": "焦虑因子反映与焦虑相关的症状体验，包括紧张不安、神经过敏、过分担忧、心跳加速、坐立不安、惊恐发作等，也包含部分不真实感体验。",
+      "levels": {
+        "normal": "您的焦虑因子得分处于正常范围，提示您近期情绪唤醒水平适度，没有明显的紧张担忧困扰。",
+        "mild": "您的焦虑因子得分呈轻度水平，提示您近期可能存在一些紧张、担心或心神不宁，多与具体压力事件相关。可通过深呼吸、正念放松、运动等方式缓解，通常不影响正常生活。",
+        "moderate": "您的焦虑因子得分呈中度水平，提示您近期焦虑体验已较明显，可能出现心慌、坐立不安、过度担忧等，且难以自行平复。建议学习系统放松技术、规律作息减少咖啡因摄入；若持续存在，可寻求专业心理干预。",
+        "severe": "您的焦虑因子得分较高，提示您近期处于较明显的焦虑状态，紧张、担忧或惊恐体验可能频繁出现并干扰生活。强烈建议您尽快寻求精神心理专科评估，焦虑障碍有成熟的药物与心理治疗方案，及时干预效果良好。"
+      }
+    },
+    {
+      "id": "HOS",
+      "name": "敌对",
+      "nameEn": "Hostility",
+      "items": [11, 24, 63, 67, 74, 81],
+      "desc": "敌对因子反映敌对性表现，包括容易烦恼激动、与人争论、难以控制的脾气爆发、摔东西乃至攻击冲动等。",
+      "levels": {
+        "normal": "您的敌对因子得分处于正常范围，提示您近期情绪表达较为平和，冲突管理能力良好。",
+        "mild": "您的敌对因子得分呈轻度水平，提示您近期可能较容易烦躁或与人发生口角，多与压力、疲劳有关。适当调整节奏、练习情绪觉察与表达技巧，通常可自行改善。",
+        "moderate": "您的敌对因子得分呈中度水平，提示您近期易怒、敌对情绪较明显，可能影响人际关系。建议学习愤怒管理技巧（如暂停-深呼吸-理性表达），寻找健康宣泄渠道；若冲突频发，可考虑心理咨询。",
+        "severe": "您的敌对因子得分较高，提示您近期敌对冲动较强烈，可能出现难以控制的发怒或破坏行为，对关系与自身安全均有影响。强烈建议您寻求专业帮助学习情绪调节；若出现过伤害他人的冲动，请务必尽快联系心理专科或精神科医生。"
+      }
+    },
+    {
+      "id": "PHOB",
+      "name": "恐怖",
+      "nameEn": "Phobic Anxiety",
+      "items": [13, 25, 47, 50, 70, 75, 82],
+      "desc": "恐怖因子反映与恐怖状态相关的体验，如害怕空旷场所、害怕单独出门、害怕乘公共交通、害怕人群密集处、怕独自待着等，并因此产生回避行为。",
+      "levels": {
+        "normal": "您的恐怖因子得分处于正常范围，提示您没有明显的特定情境恐惧或回避困扰。",
+        "mild": "您的恐怖因子得分呈轻度水平，提示您可能对个别情境（如人多、空旷、独自外出）存在轻度紧张或回避，尚未明显影响生活。循序渐进的暴露练习通常有助于适应。",
+        "moderate": "您的恐怖因子得分呈中度水平，提示您对某些情境的恐惧与回避已较明显，可能限制您的出行与社交范围。建议在信任的人陪伴下逐步接触令您不安的场景，必要时寻求专业的系统脱敏或认知行为治疗。",
+        "severe": "您的恐怖因子得分较高，提示您存在较突出的情境恐惧与回避行为，日常生活可能因此受到显著限制。强烈建议您寻求心理专科评估，恐怖症对暴露疗法、认知行为治疗反应良好，及时干预可有效恢复生活功能。"
+      }
+    },
+    {
+      "id": "PAR",
+      "name": "偏执",
+      "nameEn": "Paranoid Ideation",
+      "items": [8, 18, 43, 68, 76, 83],
+      "desc": "偏执因子反映猜疑、敌对、关系妄想等偏执性思维特征，如觉得他人不可信任、感到被监视或被议论、认为成绩未获公正评价、认为他人知道自己的想法等。",
+      "levels": {
+        "normal": "您的偏执因子得分处于正常范围，提示您对他人的信任感与安全感总体良好，思维弹性正常。",
+        "mild": "您的偏执因子得分呈轻度水平，提示您可能偶尔对他人产生猜疑或感到被针对，多在压力情境下出现。建议多角度验证想法，加强与可信赖者的沟通，通常可自行调节。",
+        "moderate": "您的偏执因子得分呈中度水平，提示您猜疑、不信任感较明显，可能影响人际关系与安全感。建议审视这些想法的现实依据，尝试开放沟通；若持续困扰，可寻求心理咨询帮助梳理。",
+        "severe": "您的偏执因子得分较高，提示您存在较突出的猜疑与被针对体验，可能已显著影响社会功能与人际信任。强烈建议您寻求精神心理专科评估，专业干预能帮助您更客观地看待这些体验并改善生活质量。"
+      }
+    },
+    {
+      "id": "PSY",
+      "name": "精神病性",
+      "nameEn": "Psychoticism",
+      "items": [7, 16, 35, 62, 77, 84, 85, 87, 88, 90],
+      "desc": "精神病性因子反映幻听、思维被控制感、被洞悉感、非真实体验等精神分裂样症状，以及孤独感、身体严重感等体验。注意：单凭问卷无法诊断精神病性障碍，本因子得分高仅提示需要专业评估。",
+      "levels": {
+        "normal": "您的精神病性因子得分处于正常范围，提示您的思维体验与感知正常，没有异常的精神性体验。",
+        "mild": "您的精神病性因子得分呈轻度水平，提示您可能偶尔有一些难以言说的奇特体验或孤独感，多与疲劳、压力有关，通常无临床意义。若持续存在或加重，建议观察并适时就医咨询。",
+        "moderate": "您的精神病性因子得分呈中度水平，提示您可能存在一些异常体验（如奇特想法、不真实感、明显孤独感等），建议您尽快前往精神心理专科进行评估，以明确情况并获得专业指导。",
+        "severe": "您的精神病性因子得分较高，提示您可能存在较突出的异常感知或思维体验。强烈建议您尽快前往正规医院精神科（或心理科）接受专业评估，这类体验通过规范治疗通常可以得到有效控制，请勿独自承受。"
+      }
+    },
+    {
+      "id": "OTHER",
+      "name": "其他（睡眠与饮食）",
+      "nameEn": "Additional Items",
+      "items": [19, 44, 59, 60, 64, 66, 89],
+      "desc": "该维度为附加条目，反映睡眠质量（入睡困难、早醒、睡不安稳）、食欲变化（胃口差、进食过多）及对死亡、性的思虑等，不参与九大因子分类，但为综合评估提供重要参考。",
+      "levels": {
+        "normal": "您的睡眠、食欲等附加条目表现总体平稳，未见明显异常。",
+        "mild": "您在睡眠或食欲方面存在轻度困扰（如偶尔入睡慢、易醒或食欲波动），多与近期作息与压力有关，调整作息后通常可改善。",
+        "moderate": "您在睡眠或食欲方面存在较明显困扰，可能影响日间精力与情绪状态。建议规律作息、减少睡前刺激，若持续存在可寻求医疗帮助。",
+        "severe": "您在睡眠或食欲方面存在突出问题，已可能对健康造成明显影响。建议您重视并前往医院就诊评估，同时关注其中涉及死亡、性思虑条目的内容，必要时与医生坦诚沟通。"
+      }
+    }
+  ],
+  "questions": [
+    {"no": 1, "text": "头痛", "factor": "SOM"},
+    {"no": 2, "text": "神经过敏，心中不踏实", "factor": "ANX"},
+    {"no": 3, "text": "头脑中有不必要的想法或字句盘旋", "factor": "OC"},
+    {"no": 4, "text": "头昏或昏倒", "factor": "SOM"},
+    {"no": 5, "text": "对异性的兴趣减退", "factor": "DEP"},
+    {"no": 6, "text": "对旁人责备求全", "factor": "INT"},
+    {"no": 7, "text": "感到别人能控制你的思想", "factor": "PSY"},
+    {"no": 8, "text": "责怪别人制造麻烦", "factor": "PAR"},
+    {"no": 9, "text": "忘记性大", "factor": "OC"},
+    {"no": 10, "text": "担心自己的衣饰整齐及仪态的端正", "factor": "OC"},
+    {"no": 11, "text": "容易烦恼和激动", "factor": "HOS"},
+    {"no": 12, "text": "胸痛", "factor": "SOM"},
+    {"no": 13, "text": "害怕空旷的场所或街道", "factor": "PHOB"},
+    {"no": 14, "text": "感到自己的精力下降，活动减慢", "factor": "DEP"},
+    {"no": 15, "text": "想结束自己的生命", "factor": "DEP"},
+    {"no": 16, "text": "听到旁人听不到的声音", "factor": "PSY"},
+    {"no": 17, "text": "发抖", "factor": "ANX"},
+    {"no": 18, "text": "感到大多数人都不可信任", "factor": "PAR"},
+    {"no": 19, "text": "胃口不好", "factor": "OTHER"},
+    {"no": 20, "text": "容易哭泣", "factor": "DEP"},
+    {"no": 21, "text": "同异性相处时感到害羞不自在", "factor": "INT"},
+    {"no": 22, "text": "感到受骗，中了圈套或有人想抓住您", "factor": "DEP"},
+    {"no": 23, "text": "无缘无故地突然感到害怕", "factor": "ANX"},
+    {"no": 24, "text": "自己不能控制地大发脾气", "factor": "HOS"},
+    {"no": 25, "text": "怕单独出门", "factor": "PHOB"},
+    {"no": 26, "text": "经常责怪自己", "factor": "DEP"},
+    {"no": 27, "text": "腰痛", "factor": "SOM"},
+    {"no": 28, "text": "感到难以完成任务", "factor": "OC"},
+    {"no": 29, "text": "感到孤独", "factor": "DEP"},
+    {"no": 30, "text": "感到苦闷", "factor": "DEP"},
+    {"no": 31, "text": "过分担忧", "factor": "DEP"},
+    {"no": 32, "text": "对事物不感兴趣", "factor": "DEP"},
+    {"no": 33, "text": "感到害怕", "factor": "ANX"},
+    {"no": 34, "text": "你的感情容易受到伤害", "factor": "INT"},
+    {"no": 35, "text": "旁人能知道您的私下想法", "factor": "PSY"},
+    {"no": 36, "text": "感到别人不理解您、不同情您", "factor": "INT"},
+    {"no": 37, "text": "感到人们对您不友好，不喜欢您", "factor": "INT"},
+    {"no": 38, "text": "做事必须做得很慢以保证做得正确", "factor": "OC"},
+    {"no": 39, "text": "心跳得很厉害", "factor": "ANX"},
+    {"no": 40, "text": "恶心或胃部不舒服", "factor": "SOM"},
+    {"no": 41, "text": "感到比不上他人", "factor": "INT"},
+    {"no": 42, "text": "肌肉酸痛", "factor": "SOM"},
+    {"no": 43, "text": "感到有人在监视您、谈论您", "factor": "PAR"},
+    {"no": 44, "text": "难以入睡", "factor": "OTHER"},
+    {"no": 45, "text": "做事必须反复检查", "factor": "OC"},
+    {"no": 46, "text": "难以作出决定", "factor": "OC"},
+    {"no": 47, "text": "怕乘电车、公共汽车、地铁或火车", "factor": "PHOB"},
+    {"no": 48, "text": "呼吸有困难", "factor": "SOM"},
+    {"no": 49, "text": "一阵阵发冷或发热", "factor": "SOM"},
+    {"no": 50, "text": "因为感到害怕而避开某些东西、场合或地方", "factor": "PHOB"},
+    {"no": 51, "text": "脑子变空了", "factor": "OC"},
+    {"no": 52, "text": "身体发麻或刺痛", "factor": "SOM"},
+    {"no": 53, "text": "喉咙有梗塞感", "factor": "SOM"},
+    {"no": 54, "text": "感到前途没有希望", "factor": "DEP"},
+    {"no": 55, "text": "不能集中注意力", "factor": "OC"},
+    {"no": 56, "text": "感到身体的某一部分软弱无力", "factor": "SOM"},
+    {"no": 57, "text": "感到紧张或容易紧张", "factor": "ANX"},
+    {"no": 58, "text": "感到手或脚发重", "factor": "SOM"},
+    {"no": 59, "text": "想到死亡的事", "factor": "OTHER"},
+    {"no": 60, "text": "吃得太多", "factor": "OTHER"},
+    {"no": 61, "text": "当别人看着您或谈论您时感到不自在", "factor": "INT"},
+    {"no": 62, "text": "有一些不属于您自己的想法", "factor": "PSY"},
+    {"no": 63, "text": "有想打人或伤害他人的冲动", "factor": "HOS"},
+    {"no": 64, "text": "醒得太早", "factor": "OTHER"},
+    {"no": 65, "text": "必须反复洗手、点数目或触摸某些东西", "factor": "OC"},
+    {"no": 66, "text": "睡得不稳不深", "factor": "OTHER"},
+    {"no": 67, "text": "有想摔坏或破坏东西的冲动", "factor": "HOS"},
+    {"no": 68, "text": "有一些别人没有的想法或念头", "factor": "PAR"},
+    {"no": 69, "text": "感到对别人神经过敏", "factor": "INT"},
+    {"no": 70, "text": "在商店或电影院等人多的地方感到不自在", "factor": "PHOB"},
+    {"no": 71, "text": "感到任何事情都很困难", "factor": "DEP"},
+    {"no": 72, "text": "一阵阵恐惧或惊恐", "factor": "ANX"},
+    {"no": 73, "text": "感到在公共场合吃东西很不舒服", "factor": "INT"},
+    {"no": 74, "text": "经常与人争论", "factor": "HOS"},
+    {"no": 75, "text": "单独一人时神经很紧张", "factor": "PHOB"},
+    {"no": 76, "text": "别人对您的成绩没有做出恰当的评价", "factor": "PAR"},
+    {"no": 77, "text": "即使和别人在一起也感到孤单", "factor": "PSY"},
+    {"no": 78, "text": "感到坐立不安、心神不宁", "factor": "ANX"},
+    {"no": 79, "text": "感到自己没有什么价值", "factor": "DEP"},
+    {"no": 80, "text": "感到熟悉的东西变成陌生或不像是真的", "factor": "ANX"},
+    {"no": 81, "text": "大叫或摔东西", "factor": "HOS"},
+    {"no": 82, "text": "害怕会在公共场合昏倒", "factor": "PHOB"},
+    {"no": 83, "text": "怕别人认为您的脑子有毛病", "factor": "PAR"},
+    {"no": 84, "text": "感到自己的身体有严重问题", "factor": "PSY"},
+    {"no": 85, "text": "从未感到和其他人很亲近", "factor": "PSY"},
+    {"no": 86, "text": "感到自己受到某种控制，或意念被夺走", "factor": "ANX"},
+    {"no": 87, "text": "认为别人知道您的想法", "factor": "PSY"},
+    {"no": 88, "text": "怕单独一个人待着", "factor": "PSY"},
+    {"no": 89, "text": "为一些有关\"性\"的想法而很烦恼", "factor": "OTHER"},
+    {"no": 90, "text": "感到自己的脑子有毛病", "factor": "PSY"}
+  ],
+  "scoring_guide": {
+    "factor_score": "因子分 = 该因子各条目得分之和 ÷ 该因子条目数",
+    "total_mean": "总均分 = 90题得分总和 ÷ 90",
+    "positive_count": "阳性项目数 = 得分≥2的条目数",
+    "negative_count": "阴性项目数 = 得分=1的条目数",
+    "positive_mean": "阳性症状均分 = 阳性项目得分总和 ÷ 阳性项目数",
+    "screen_positive": "筛查阳性参考标准：总分≥160，或阳性项目数≥43，或任一因子分≥2",
+    "level_rules": [
+      {"max": 1.5, "label": "正常范围"},
+      {"min": 1.5, "max": 2, "label": "轻度"},
+      {"min": 2, "max": 2.5, "label": "中度"},
+      {"min": 2.5, "label": "重度倾向"}
+    ]
+  },
+  "hotline": {
+    "national": "全国心理援助热线：12356",
+    "note": "若您此刻有伤害自己的念头，请立即拨打全国心理援助热线 12356，或前往就近医院急诊寻求帮助。"
+  },
+  "disclaimer": "本测评结果基于 SCL-90 症状自评量表标准计分规则生成，仅用于健康自评与参考，不构成医学诊断。如有疑虑，请前往正规医院精神科或心理科就诊咨询。"
+};
+
+/* ============================================================
+   全局状态
+============================================================ */
+const QUESTIONS = SCL90_DATA.questions;   // 90 题
+const FACTORS = SCL90_DATA.factors;       // 10 因子
+const OPTIONS = SCL90_DATA.options;       // 5 选项
+const ANSWERS = new Array(QUESTIONS.length).fill(0); // 0=未答
+let curIndex = 0; // 当前题目索引（0-89）
+
+const LEVEL_META = {
+  normal:  { label: "正常范围", cls: "lv-normal" },
+  mild:    { label: "轻度",     cls: "lv-mild" },
+  moderate:{ label: "中度",     cls: "lv-moderate" },
+  severe:  { label: "重度倾向", cls: "lv-severe" }
+};
+
+function escapeHtml(s){
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+}
+
+/* ============================================================
+   页面切换
+============================================================ */
+function showPage(id){
+  ['intro-page','test-page','report-page'].forEach(p => {
+    document.getElementById(p).style.display = (p === id) ? 'block' : 'none';
+  });
+  window.scrollTo(0,0);
+}
+
+function startTest(){
+  showPage('test-page');
+  renderQuestion(curIndex);
+}
+
+function restartTest(){
+  for(let i=0;i<ANSWERS.length;i++) ANSWERS[i]=0;
+  curIndex = 0;
+  showPage('intro-page');
+}
+
+/* ============================================================
+   答题渲染（一题一页）
+============================================================ */
+function updateProgress(){
+  const done = ANSWERS.filter(v => v>0).length;
+  document.getElementById('progressFill').style.width = (done/QUESTIONS.length*100) + '%';
+  document.getElementById('progressNum').textContent = '第 ' + (curIndex+1) + ' / ' + QUESTIONS.length + ' 题';
+  document.getElementById('doneCount').textContent = done;
+  document.getElementById('btnPrev').style.visibility = (curIndex === 0) ? 'hidden' : 'visible';
+}
+
+function renderQuestion(i){
+  curIndex = i;
+  const q = QUESTIONS[curIndex];
+  const idx = q.no - 1;
+  const stage = document.getElementById('questionStage');
+  stage.innerHTML = '';
+
+  const card = document.createElement('div');
+  card.className = 'q-card fade-in' + (ANSWERS[idx] > 0 ? ' answered' : '');
+  card.id = 'q-card-' + q.no;
+
+  const optsHtml = OPTIONS.map((o, oi) => {
+    const checked = ANSWERS[idx] === o.value ? ' checked' : '';
+    const lastCls = (oi === OPTIONS.length - 1) ? ' opt-last' : '';
+    return '<label class="opt' + lastCls + '">' +
+      '<input type="radio" name="q_' + q.no + '" value="' + o.value + '"' + checked +
+      ' onchange="setAnswer(' + idx + ',' + o.value + ')">' +
+      '<span class="dot"></span><span class="opt-label">' + o.label + '</span>' +
+      '</label>';
+  }).join('');
+
+  card.innerHTML = '<div class="q-text"><span class="q-no">' + q.no + '.</span>' + escapeHtml(q.text) + '</div>' +
+    '<div class="q-opts">' + optsHtml + '</div>';
+  stage.appendChild(card);
+
+  updateProgress();
+  window.scrollTo(0, 0);
+}
+
+function setAnswer(idx, val){
+  ANSWERS[idx] = val;
+  document.getElementById('q-card-' + (idx+1)).classList.add('answered');
+  updateProgress();
+  /* 作答后自动平滑跳转到下一题 */
+  if(idx < QUESTIONS.length - 1){
+    setTimeout(function(){ renderQuestion(idx + 1); }, 320);
+  } else {
+    /* 第 90 题作答完成：显示过渡，准备查看报告 */
+    setTimeout(showDoneTransition, 500);
+  }
+}
+
+function prevQuestion(){
+  if(curIndex === 0) return;
+  renderQuestion(curIndex - 1);
+}
+
+/* 作答完成过渡 */
+function showDoneTransition(){
+  const stage = document.getElementById('questionStage');
+  stage.innerHTML =
+    '<div class="q-card fade-in" style="text-align:center;padding:34px 28px;">' +
+      '<div style="font-size:42px;color:var(--green);">✔</div>' +
+      '<div style="font-size:19px;font-weight:800;color:#0f172a;margin-top:8px;">作答完成</div>' +
+      '<div style="font-size:14px;color:var(--text-sub);margin-top:6px;">您已完成全部 90 题测评，系统正在为您生成详细的心理评估报告。</div>' +
+      '<button class="btn-print" onclick="submitTest()" style="margin-top:20px;padding:12px 40px;border:none;border-radius:10px;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;font-size:15px;font-weight:700;cursor:pointer;">查看报告</button>' +
+    '</div>';
+  document.getElementById('progressFill').style.width = '100%';
+  document.getElementById('progressNum').textContent = '第 90 / 90 题';
+}
+
+/* ============================================================
+   计分与报告
+============================================================ */
+function getLevel(score){
+  if(score < 1.5) return 'normal';
+  if(score < 2)   return 'mild';
+  if(score < 2.5) return 'moderate';
+  return 'severe';
+}
+
+function computeReport(){
+  let total = 0, posSum = 0, posCnt = 0, negCnt = 0;
+  for(let i=0;i<ANSWERS.length;i++){
+    const v = ANSWERS[i];
+    total += v;
+    if(v >= 2){ posSum += v; posCnt++; }
+    if(v === 1) negCnt++;
+  }
+  const totalMean = total / 90;
+  const posMean = posCnt > 0 ? posSum / posCnt : 0;
+  const factorScores = FACTORS.map(f => {
+    let s = 0;
+    f.items.forEach(no => { s += ANSWERS[no-1]; });
+    const raw = s / f.items.length;
+    const score = Math.round(raw*100)/100;
+    const level = getLevel(raw);
+    return {
+      id: f.id, name: f.name, nameEn: f.nameEn, desc: f.desc,
+      score: score, raw: raw, level: level, reportText: f.levels[level]
+    };
+  });
+  const screenPositive = (total >= 160) || (posCnt >= 43) || factorScores.some(f => f.raw >= 2);
+  return { total, totalMean, posCnt, negCnt, posMean, screenPositive, factorScores };
+}
+
+function submitTest(){
+  const r = computeReport();
+  renderReport(r);
+  showPage('report-page');
+}
+
+/* ============================================================
+   报告渲染
+============================================================ */
+function renderReport(r){
+  /* 1. 风险警示：第15题或第59题得分≥2 */
+  const riskQ15 = ANSWERS[14];
+  const riskQ59 = ANSWERS[58];
+  const riskBanner = document.getElementById('riskBanner');
+  if(riskQ15 >= 2 || riskQ59 >= 2){
+    riskBanner.classList.add('show');
+  } else {
+    riskBanner.classList.remove('show');
+  }
+
+  /* 2. 综合指标 */
+  document.getElementById('rTotalMean').textContent = r.totalMean.toFixed(2);
+  document.getElementById('rTotal').textContent = r.total;
+  document.getElementById('rPosCnt').textContent = r.posCnt;
+  document.getElementById('rNegCnt').textContent = r.negCnt;
+  document.getElementById('rPosMean').textContent = r.posCnt > 0 ? r.posMean.toFixed(2) : '—';
+  document.getElementById('rScreenLine').textContent = '160 / 43 / 2.0';
+
+  const conclusion = document.getElementById('rConclusion');
+  if(r.screenPositive){
+    conclusion.className = 'screen-conclusion sc-pos';
+    conclusion.innerHTML = '筛查阳性：本次测评结果达到 SCL-90 筛查阳性参考标准（总分≥160 或阳性项目数≥43 或任一因子分≥2），提示您近期心理状态可能存在需要关注的问题，建议尽快前往正规医院精神心理科进行专业评估与咨询。';
+  } else {
+    conclusion.className = 'screen-conclusion sc-neg';
+    conclusion.innerHTML = '筛查阴性：本次测评结果未达到 SCL-90 筛查阳性参考标准，提示您近期整体心理状态处于相对平稳水平。请注意保持规律作息、适度运动与良好的社会支持，持续关注自身感受。';
+  }
+
+  /* 3. 因子得分表 */
+  const tbody = document.getElementById('factorTableBody');
+  tbody.innerHTML = '';
+  r.factorScores.forEach(f => {
+    const meta = LEVEL_META[f.level];
+    const tr = document.createElement('tr');
+    tr.innerHTML = '<td class="fname">' + escapeHtml(f.name) + '</td>' +
+      '<td style="font-weight:700;">' + f.score.toFixed(2) + '</td>' +
+      '<td><span class="badge ' + meta.cls + '">' + meta.label + '</span></td>';
+    tbody.appendChild(tr);
+  });
+
+  /* 4. 雷达图（9 大因子，不含 OTHER） */
+  const main9 = r.factorScores.filter(f => f.id !== 'OTHER');
+  drawRadar(main9);
+
+  /* 5. 因子详情 */
+  const details = document.getElementById('factorDetails');
+  details.innerHTML = '';
+  r.factorScores.forEach(f => {
+    const meta = LEVEL_META[f.level];
+    const div = document.createElement('div');
+    div.className = 'factor-detail';
+    div.innerHTML =
+      '<div class="fd-head">' +
+        '<span class="fd-name">' + escapeHtml(f.name) + '</span>' +
+        '<span class="fd-en">' + escapeHtml(f.nameEn) + '</span>' +
+        '<span class="badge ' + meta.cls + '" style="font-size:12px;">' + meta.label + '</span>' +
+        '<span class="fd-score">' + f.score.toFixed(2) + ' 分</span>' +
+      '</div>' +
+      '<div class="fd-desc">' + escapeHtml(f.desc) + '</div>' +
+      '<div class="fd-report ' + meta.cls + '">' + escapeHtml(f.reportText) + '</div>';
+    details.appendChild(div);
+  });
+
+  /* 6. 整体综合评估与个性化建议 */
+  document.getElementById('adviceBox').innerHTML = buildAdvice(r);
+}
+
+function buildAdvice(r){
+  const items = [];
+
+  if(r.screenPositive){
+    items.push('本次测评达到筛查阳性标准，提示存在需要重视的心理困扰信号。请勿独自承受，建议尽快前往正规医院精神心理科（或心理科）进行系统评估，心理问题与身体疾病一样值得被认真对待，且大多有成熟有效的干预方案。');
+  } else {
+    items.push('本次测评未达筛查阳性标准，整体心理状态相对平稳。请继续维持健康的作息、适度的运动与有意义的人际联结，这是长期心理健康的基石。');
+  }
+
+  /* 得分最高因子 */
+  const sorted = [...r.factorScores].sort((a,b) => b.raw - a.raw);
+  const top = sorted[0];
+  items.push('在全部维度中，「' + top.name + '」得分相对最高（' + top.score.toFixed(2) + ' 分，' + LEVEL_META[top.level].label + '）。建议您对这一维度保持觉察，可对照上方详细报告中的建议进行针对性调整。');
+
+  /* 达到中度及以上的因子 */
+  const notable = r.factorScores.filter(f => f.level === 'moderate' || f.level === 'severe');
+  if(notable.length > 0){
+    items.push('以下维度已达到中度或重度倾向水平，建议重点跟进：' + notable.map(f => '「' + f.name + '」(' + f.score.toFixed(2) + '分)').join('、') + '。');
+  }
+
+  /* 睡眠饮食（OTHER）提示 */
+  const otherF = r.factorScores.find(f => f.id === 'OTHER');
+  if(otherF && otherF.raw >= 2){
+    items.push('您的睡眠与饮食附加条目得分偏高（' + otherF.score.toFixed(2) + ' 分），睡眠与食欲是身心状态的重要晴雨表。建议固定作息时间、睡前一小时远离电子屏幕、减少咖啡因摄入，若持续两周以上无明显改善，可就医咨询。');
+  }
+
+  /* 具体建议 */
+  items.push('日常自我调适建议：保持每周 3-5 次、每次 30 分钟左右的适度运动；练习深呼吸或正念放松（每天 10 分钟）；与信任的亲友保持坦诚沟通，必要时主动求助。');
+  items.push('请记住：SCL-90 属于症状自评筛查工具，结果受近期状态影响，不代表临床诊断。任何测评结果都应以专业人员的面询评估为准。');
+
+  return '<h3>综合评估</h3><ul>' + items.map(t => '<li>' + t + '</li>').join('') + '</ul>';
+}
+
+/* ============================================================
+   雷达图（Canvas 自绘，无外部依赖）
+============================================================ */
+function drawRadar(factors){
+  const canvas = document.getElementById('radarCanvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0,0,W,H);
+
+  const n = factors.length;
+  const cx = W/2, cy = H/2;
+  const R = Math.min(W,H)/2 - 92;
+  const maxScore = 5;
+
+  const shortNames = {
+    SOM:'躯体化', OC:'强迫症状', INT:'人际敏感', DEP:'抑郁', ANX:'焦虑',
+    HOS:'敌对', PHOB:'恐怖', PAR:'偏执', PSY:'精神病性'
+  };
+
+  /* 网格：5 圈同心多边形（1-5 刻度） */
+  for(let lv=1; lv<=maxScore; lv++){
+    ctx.beginPath();
+    const r = R * lv / maxScore;
+    for(let i=0;i<=n;i++){
+      const ang = -Math.PI/2 + i*2*Math.PI/n;
+      const x = cx + r*Math.cos(ang);
+      const y = cy + r*Math.sin(ang);
+      if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    }
+    ctx.closePath();
+    ctx.strokeStyle = (lv === maxScore) ? '#93c5fd' : '#e2e8f0';
+    ctx.lineWidth = (lv === maxScore) ? 1.5 : 1;
+    ctx.stroke();
+    /* 刻度数字 */
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = '11px "Microsoft YaHei", sans-serif';
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(String(lv), cx - 6, cy - R*lv/maxScore);
+  }
+
+  /* 轴线与标签 */
+  for(let i=0;i<n;i++){
+    const ang = -Math.PI/2 + i*2*Math.PI/n;
+    const x = cx + R*Math.cos(ang);
+    const y = cy + R*Math.sin(ang);
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(x, y);
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    /* 顶点圆点 */
+    ctx.beginPath();
+    ctx.arc(x, y, 4, 0, Math.PI*2);
+    ctx.fillStyle = '#93c5fd';
+    ctx.fill();
+
+    /* 标签 */
+    const lx = cx + (R+26)*Math.cos(ang);
+    const ly = cy + (R+26)*Math.sin(ang);
+    const cosA = Math.cos(ang), sinA = Math.sin(ang);
+    ctx.fillStyle = '#334155';
+    ctx.font = '13px "Microsoft YaHei", sans-serif';
+    ctx.textAlign = cosA > 0.35 ? 'left' : (cosA < -0.35 ? 'right' : 'center');
+    ctx.textBaseline = sinA > 0.3 ? 'top' : (sinA < -0.3 ? 'bottom' : 'middle');
+    ctx.fillText(shortNames[factors[i].id] || factors[i].name, lx, ly);
+  }
+
+  /* 数据多边形 */
+  ctx.beginPath();
+  for(let i=0;i<n;i++){
+    const ang = -Math.PI/2 + i*2*Math.PI/n;
+    const val = Math.max(0.5, Math.min(maxScore, factors[i].raw));
+    const r = R * val / maxScore;
+    const x = cx + r*Math.cos(ang);
+    const y = cy + r*Math.sin(ang);
+    if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+  }
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(37,99,235,.18)';
+  ctx.fill();
+  ctx.strokeStyle = '#2563eb';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  /* 数据顶点 */
+  for(let i=0;i<n;i++){
+    const ang = -Math.PI/2 + i*2*Math.PI/n;
+    const val = Math.max(0.5, Math.min(maxScore, factors[i].raw));
+    const r = R * val / maxScore;
+    const x = cx + r*Math.cos(ang);
+    const y = cy + r*Math.sin(ang);
+    ctx.beginPath();
+    ctx.arc(x, y, 4.5, 0, Math.PI*2);
+    ctx.fillStyle = '#2563eb';
+    ctx.fill();
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+  }
+}
+
+/* ============================================================
+   初始化
+============================================================ */
+renderQuestion(0);
+</script>
+</body>
+</html>
